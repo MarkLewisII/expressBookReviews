@@ -2,6 +2,7 @@ const express = require('express');
 let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
+let axios = requier('axios');
 const public_users = express.Router();
 
 
@@ -27,7 +28,8 @@ public_users.post("/register", (req,res) => {
 // Get the book list available in the shop
 public_users.get('/',function (req, res) {
   //Write your code here
-
+    
+  
   res.send(JSON.stringify(books, null, 4));
 //   return res.status(300).json({message: "Yet to be implemented"});
 });
