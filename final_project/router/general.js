@@ -23,7 +23,7 @@ public_users.get('/isbn/:isbn',function (req, res) {
   //Write your code here
 
     const isbn = req.params.isbn;
-    const book = books[isbn];
+    const book = books[parseInt(isbn)];
 
     if (book) {
         res.status(200).json(book);
@@ -31,15 +31,24 @@ public_users.get('/isbn/:isbn',function (req, res) {
         res.status(404).json({message: "Book not found"});
     }
 
-//   res.send(req.params.ISBN);
-
 //   return res.status(300).json({message: "Yet to be implemented"});
  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
   //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+
+  const requestedAuthor = req.params.author.toLowerCase();
+  const matchingBooks = Object.values(books).filter(book => book.author.toLowerCase() === requestedAuthor);
+
+  if (matchingBooks.length > 0) {
+    res.status(200).json(matchingBooks);
+  } else {
+    res.status(404).json({message: "No books found by that author"});
+  }
+
+
+//   return res.status(300).json({message: "Yet to be implemented"});
 });
 
 // Get all books based on title
