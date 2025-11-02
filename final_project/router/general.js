@@ -102,17 +102,37 @@ public_users.get('/author/:author', async function (req, res) {
 });
 
 // Get all books based on title
-public_users.get('/title/:title', function (req, res) {
+public_users.get('/title/:title', async function (req, res) {
     //Write your code here
 
-    const requestedTitle = req.params.title.toLowerCase();
-    const matchingBooks = Object.values(books).filter(book => book.title.toLowerCase() === requestedTitle);
+    const title = req.params.title;
 
-    if (matchingBooks.length > 0) {
-        res.status(200).json(matchingBooks);
-    } else {
-        res.status(404).json({ message: "No books found with that title" });
+    try {
+        const getBooksByTitle = () => new Promise((resolve, reject) => {
+            const matchingBooks = Object.values(books).filter(book => book.title.toLowerCase() === title.toLowerCase());
+
+            if (matchingBooks.length > 0) {
+                resolve(matchingBooks);
+            } else {
+                reject(new Error("No books fround with this title"));
+            }
+        });
+
+        const results = await getBooksByTitle();
+
+        res.status(200).json(results);
+    } catch (error) {
+        res.status(404).json({message: error.message});
     }
+
+    // const requestedTitle = req.params.title.toLowerCase();
+    // const matchingBooks = Object.values(books).filter(book => book.title.toLowerCase() === requestedTitle);
+
+    // if (matchingBooks.length > 0) {
+    //     res.status(200).json(matchingBooks);
+    // } else {
+    //     res.status(404).json({ message: "No books found with that title" });
+    // }
 });
 
 //  Get book review
