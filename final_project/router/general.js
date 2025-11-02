@@ -25,12 +25,6 @@ public_users.post("/register", (req, res) => {
 
 });
 
-// // Get the book list available in the shop
-// public_users.get('/', function (req, res) {
-//     //Write your code here
-//     res.send(JSON.stringify(books, null, 4));
-// });
-
 public_users.get('/', async function (req, res) {
     try {
         const getBooks = () => new Promise((resolve) =>{
@@ -45,17 +39,33 @@ public_users.get('/', async function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn', function (req, res) {
+public_users.get('/isbn/:isbn', async function (req, res) {
     //Write your code here
-
     const isbn = req.params.isbn;
-    const book = books[parseInt(isbn)];
+    
+    try {
+        const getBookByISBN = () => new Promise((resolve, reject) => {
+            const book = books[isbn];
+            if (book) {
+                resolve(book);
+            } else {
+                reject(new Error("Book not found"));
+            }
+        });
 
-    if (book) {
-        res.status(200).json(book);
-    } else {
-        res.status(404).json({ message: "Book not found" });
+        const bookDetails = await getBookByISBN();
+        res.status(200).json(bookDetails);
+    } catch (error) {
+        res.status(404).json({ message: error.message});
     }
+    
+    // const book = books[parseInt(isbn)];
+
+    // if (book) {
+    //     res.status(200).json(book);
+    // } else {
+    //     res.status(404).json({ message: "Book not found" });
+    // }
 });
 
 // Get book details based on author
